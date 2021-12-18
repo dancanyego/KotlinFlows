@@ -17,8 +17,14 @@ import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlinflows.ui.theme.KotlinFlowsTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import androidx.lifecycle.Lifecycle.State as State1
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,3 +44,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun <T>ComponentActivity.collectLatestLifeCycleFlow(flow:Flow<T> ,collect:suspend(T) ->Unit){
+    lifecycleScope.launch {
+        repeatOnLifecycle(State1.STARTED){
+            flow.collectLatest(collect)
+
+        }
+    }
+}
