@@ -27,20 +27,27 @@ class MainViewModel: ViewModel() {
 
     private fun collectFlow(){
         val flow1 = flow {
-            emit(1)
-            delay(500L)
-            emit(2)
+            delay(250L)
+            emit("Appetizers")
+            delay(1000L)
+            emit("Main Dish")
+            delay(1000L)
+            emit("Desert")
         }
+
         viewModelScope.launch {
-            flow1.flatMapConcat { value ->
-                flow {
-                    emit(value +1)
-                    delay(500L)
-                    emit(value +2)
-                }
-            }.collect { value ->
-                println("The Value is $value")
+            flow.onEach{
+                println("$it is delivered")
             }
+//            flow1.flatMapConcat { value ->
+//                flow {
+//                    emit(value +1)
+//                    delay(500L)
+//                    emit(value +2)
+//                }
+//            }.collect { value ->
+//                println("The Value is $value")
+//            }
 //            countDownFlow.onEach {
 //                print(it)
 //            }.launchIn(viewModelScope)
