@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -28,7 +29,14 @@ class MainViewModel: ViewModel() {
 
     private fun collectFlow(){
         viewModelScope.launch {
-            countDownFlow.collect { time ->
+            countDownFlow
+                .filter { time ->
+                    time %2 ==0 // get even values in the flow
+
+                    // this is a common filter operator used to filter flows
+
+                }
+                .collect { time ->
                 print("The current time is $time")
             }
         }
