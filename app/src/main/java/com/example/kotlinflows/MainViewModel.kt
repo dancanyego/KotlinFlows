@@ -26,11 +26,25 @@ class MainViewModel: ViewModel() {
     }
 
     private fun collectFlow(){
+        val flow1 = flow {
+            emit(1)
+            delay(500L)
+            emit(2)
+        }
         viewModelScope.launch {
-            countDownFlow.onEach {
-                print(it)
-            }.launchIn(viewModelScope)
-            countDownFlow
+            flow1.flatMapConcat { value ->
+                flow {
+                    emit(value +1)
+                    delay(500L)
+                    emit(value +2)
+                }
+            }.collect { value ->
+                println("The Value is $value")
+            }
+//            countDownFlow.onEach {
+//                print(it)
+//            }.launchIn(viewModelScope)
+            val count = countDownFlow
                 .filter { time ->
                     time %2 ==0 // get even values in the flow
 
@@ -43,9 +57,17 @@ class MainViewModel: ViewModel() {
                 .onEach { time ->
                     print(time)
                 }
-                .collect { time ->
-                print("The current time is $time")
-            }
+                .reduce { accumulator, value ->
+                    accumulator + value
+                }
+//                .count {
+//                    it %2 == 0
+//                }
+            print("The count is $count")
+//                .collect { time ->
+//                print("The current time is $time")
+//            }
+
         }
     }
 }
