@@ -21,8 +21,14 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
     init {
         collectFlow()
+    }
+    fun incrementCounter(){
+        _stateFlow.value +=1
     }
 
     private fun collectFlow(){
@@ -36,9 +42,6 @@ class MainViewModel: ViewModel() {
         }
 
         viewModelScope.launch {
-            flow.onEach{
-                println("$it is delivered")
-            }
 //            flow1.flatMapConcat { value ->
 //                flow {
 //                    emit(value +1)
