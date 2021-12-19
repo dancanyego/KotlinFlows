@@ -6,7 +6,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class MainViewModel: ViewModel() {
+class MainViewModel(
+    private val dispatchers: DispatcherProvider
+): ViewModel() {
 
     val countDownFlow = flow<Int> {
         val startingValue = 10
@@ -19,7 +21,7 @@ class MainViewModel: ViewModel() {
             currentValue--
             emit(currentValue)
         }
-    }
+    }.flowOn(dispatchers.main)
 
     private val _stateFlow = MutableStateFlow(0)
     val stateFlow = _stateFlow.asStateFlow()
@@ -41,7 +43,7 @@ class MainViewModel: ViewModel() {
             emit("Desert")
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
 //            flow1.flatMapConcat { value ->
 //                flow {
 //                    emit(value +1)
